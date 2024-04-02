@@ -2,17 +2,24 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { Select, Space, Tag, Checkbox } from "antd";
 import type { SelectProps } from "antd";
 import Styles from "../mystyles.module.css";
-import { originalDataHeaders } from "../utils/data";
-
+// import { originalDataHeaders } from "../utils/data";
+interface Props {
+  originalDataHeaders: { sheet: string; fields: string[] }[];
+}
 // options = [{ label: 'Gold', value: 'Gold' }, { label: 'Silver', value: 'Silver' }, { label: 'Platinum', value: 'Platinum' }, { label: 'Diamond', value: 'Diamond' }];
 
-export const ExtractSelectWithTag: FunctionComponent = () => {
+export const ExtractSelectWithTag: FunctionComponent<Props> = ({
+  originalDataHeaders,
+}) => {
   const [tags, setTags] = useState<string[]>([]);
   const [selectionCount, setSelectionCount] = useState<number>(0);
   const [options, setOptions] = useState<SelectProps["options"]>([]);
   useEffect(() => {
     const flattenedFields: string[] = originalDataHeaders.reduce(
-      (accumulators: string[], currentValue) => {
+      (
+        accumulators: string[],
+        currentValue: { fields: ConcatArray<string> }
+      ) => {
         const combinedFields = accumulators.concat(currentValue.fields);
         return Array.from(new Set(combinedFields));
       },
