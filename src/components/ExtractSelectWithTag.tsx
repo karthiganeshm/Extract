@@ -5,11 +5,13 @@ import Styles from "../mystyles.module.css";
 // import { originalDataHeaders } from "../utils/data";
 interface Props {
   originalDataHeaders: { sheet: string; fields: string[] }[];
+  onTagsChange: (tags: string[]) => void;
 }
 // options = [{ label: 'Gold', value: 'Gold' }, { label: 'Silver', value: 'Silver' }, { label: 'Platinum', value: 'Platinum' }, { label: 'Diamond', value: 'Diamond' }];
 
 export const ExtractSelectWithTag: FunctionComponent<Props> = ({
   originalDataHeaders,
+  onTagsChange,
 }) => {
   const [tags, setTags] = useState<string[]>([]);
   const [selectionCount, setSelectionCount] = useState<number>(0);
@@ -62,9 +64,13 @@ export const ExtractSelectWithTag: FunctionComponent<Props> = ({
   const handleChange = (value: string[]) => {
     if (!tags.includes(`${value}`)) {
       console.log(`selected ${value}`);
-      setTags((prevTags) => [...prevTags, ...value]);
-      setSelectionCount(tags.length + 1);
-      console.log(tags, "tags");
+      setTags((prevTags) => {
+        const newTags = [...prevTags, ...value];
+        setSelectionCount(newTags.length);
+        console.log(newTags, "tags");
+        onTagsChange(newTags);
+        return newTags;
+      });
     }
   };
 
@@ -72,6 +78,7 @@ export const ExtractSelectWithTag: FunctionComponent<Props> = ({
     const newTags = tags.filter((tag) => tag !== removedTag);
     setTags([...newTags]);
     setSelectionCount(newTags.length);
+    onTagsChange(newTags);
   };
 
   return (
